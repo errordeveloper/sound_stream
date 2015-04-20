@@ -8,7 +8,6 @@ use portaudio::pa::Sample as PaSample;
 use sample::{Sample, Wave};
 use settings::Settings;
 use std::marker::PhantomData;
-use time::precise_time_ns;
 
 pub type DeltaTimeSeconds = f64;
 
@@ -176,7 +175,7 @@ impl<'a, I, O> SoundStreamBuilder<'a, I, O>
 
         Ok(SoundStream {
             update_settings: update_settings,
-            last_time: precise_time_ns(),
+            last_time: stream.get_stream_time(),
             output_buffer: Vec::with_capacity(stream_settings.buffer_size()),
             update_buffer: Vec::with_capacity(update_settings.buffer_size()),
             prev_state: None,
@@ -196,7 +195,7 @@ pub struct SoundStream<'a, I=Wave, O=Wave>
         I: Sample + PaSample,
         O: Sample + PaSample,
 {
-    last_time: u64,
+    last_time: f64,
     stream_settings: Settings,
     output_buffer: Vec<O>,
     update_settings: Settings,
@@ -360,7 +359,7 @@ impl<'a, I, O> Iterator for SoundStream<'a, I, O>
             },
 
             State::Update => {
-                let this_time = precise_time_ns();
+                let this_time = self.stream.get_stream_time();
                 let diff_time = this_time - self.last_time;
                 self.last_time = this_time;
                 const BILLION: f64 = 1_000_000_000.0;

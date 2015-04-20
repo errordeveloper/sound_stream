@@ -2,7 +2,6 @@
 extern crate num;
 extern crate portaudio;
 extern crate sample;
-extern crate time;
 
 pub use error::Error;
 pub use event::SoundStream;
