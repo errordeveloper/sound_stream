@@ -362,9 +362,7 @@ impl<'a, I, O> Iterator for SoundStream<'a, I, O>
                 let this_time = self.stream.get_stream_time();
                 let diff_time = this_time - self.last_time;
                 self.last_time = this_time;
-                const BILLION: f64 = 1_000_000_000.0;
-                let diff_time_in_seconds = diff_time as f64 / BILLION;
-                Some(Event::Update(diff_time_in_seconds))
+                Some(Event::Update(diff_time))
             },
 
         }
